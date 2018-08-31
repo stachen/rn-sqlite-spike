@@ -6,8 +6,7 @@
  * @flow
  */
 
-import React, {Component} from 'react';import
-{
+import React, { Component } from 'react'; import {
   Platform,
   StyleSheet,
   Text,
@@ -46,37 +45,36 @@ export default class App extends Component<Props> {
         <Text style={styles.welcome}>Welcome to React Native!</Text>
         <Button
           title="Create Wallet and DID"
-          onPress={() =>
-          {
-            var SQLite = require('react-native-sqlite-storage') 
+          onPress={() => {
+            var SQLite = require('react-native-sqlite-storage')
             var db = SQLite.openDatabase("test.db", "1.0", "Test Database", 200000, openCB, errorCB);
 
             db.transaction((tx) => {
 
-              ts.executeSql(`CREATE TABLE data ( 
+              tx.executeSql(`CREATE TABLE IF NOT EXISTS wallet ( 
                 key text PRIMARY KEY, 
-                value text NOT NULL `
-               );
+                value text NOT NULL) `
+              );
 
-              tx.executeSql('SELECT key, value FROM data', [], (tx, results) => {
-                  console.log("Query completed");
-            
-                  // Get rows with Web SQL Database spec compliance.
-            
-                  var len = results.rows.length;
-                  for (let i = 0; i < len; i++) {
-                    let row = results.rows.item(i);
-                    console.log(`key: ${row.name}, value: ${row.deptName}`);
-                  }
-            
-                  // Alternatively, you can use the non-standard raw method.
-            
-                  /*
-                    let rows = results.rows.raw(); // shallow copy of rows Array
-            
-                    rows.map(row => console.log(`Employee name: ${row.name}, Dept Name: ${row.deptName}`));
-                  */
-                });
+            }, (e) => { console.log(e) });
+
+
+
+            console.log("Inserting into table");
+            db.transaction((tx) => {
+              tx.executeSql('INSERT INTO wallet (key, value) VALUES (\'blah1\', \'blah1\')', [], (tx, results) => {
+              });
+            });
+
+
+            console.log("Reading from table");
+            db.transaction((tx) => {
+              tx.executeSql('SELECT key, value FROM wallet', [], (tx, results) => {
+                for (let i = 0; i < results.rows.length; i++) {
+                  let row = results.rows.item(i);
+                  console.log(`key: ${row.key}, value: ${row.value}`);
+                }
+              });
             });
 
           }}

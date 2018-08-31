@@ -6,8 +6,16 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import React, {Component} from 'react';import
+{
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  Button,
+  TextInput
+} from 'react-native';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -16,14 +24,35 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
+
+function errorCB(err) {
+  console.log("SQL Error: " + err);
+}
+
+function successCB() {
+  console.log("SQL executed fine");
+}
+
+function openCB() {
+  console.log("Database OPENED");
+}
+
+
 type Props = {};
 export default class App extends Component<Props> {
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        <Button
+          title="Create Wallet and DID"
+          onPress={() =>
+          {
+            var SQLite = require('react-native-sqlite-storage') 
+            var db = SQLite.openDatabase("test.db", "1.0", "Test Database", 200000, openCB, errorCB);
+
+          }}
+        />
       </View>
     );
   }

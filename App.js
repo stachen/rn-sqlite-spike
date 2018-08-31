@@ -51,6 +51,34 @@ export default class App extends Component<Props> {
             var SQLite = require('react-native-sqlite-storage') 
             var db = SQLite.openDatabase("test.db", "1.0", "Test Database", 200000, openCB, errorCB);
 
+            db.transaction((tx) => {
+
+              ts.executeSql(`CREATE TABLE data ( 
+                key text PRIMARY KEY, 
+                value text NOT NULL `
+               );
+
+              tx.executeSql('SELECT key, value FROM data', [], (tx, results) => {
+                  console.log("Query completed");
+            
+                  // Get rows with Web SQL Database spec compliance.
+            
+                  var len = results.rows.length;
+                  for (let i = 0; i < len; i++) {
+                    let row = results.rows.item(i);
+                    console.log(`key: ${row.name}, value: ${row.deptName}`);
+                  }
+            
+                  // Alternatively, you can use the non-standard raw method.
+            
+                  /*
+                    let rows = results.rows.raw(); // shallow copy of rows Array
+            
+                    rows.map(row => console.log(`Employee name: ${row.name}, Dept Name: ${row.deptName}`));
+                  */
+                });
+            });
+
           }}
         />
       </View>

@@ -50,21 +50,18 @@ export default class App extends Component<Props> {
             var db = SQLite.openDatabase("test.db", "1.0", "Test Database", 200000, openCB, errorCB);
 
             db.transaction((tx) => {
-
               tx.executeSql(`CREATE TABLE IF NOT EXISTS wallet ( 
                 key text PRIMARY KEY, 
                 value text NOT NULL) `
               );
-
             }, (e) => { console.log(e) });
 
-
-
+            
             console.log("Inserting into table");
             db.transaction((tx) => {
-              tx.executeSql('INSERT INTO wallet (key, value) VALUES (\'blah1\', \'blah1\')', [], (tx, results) => {
+              tx.executeSql('INSERT INTO wallet (key, value) VALUES (?,?)', [new Date(), 'this is the value'], (tx, results) => {
               });
-            });
+            }, (e) => { console.log(e) });
 
 
             console.log("Reading from table");
